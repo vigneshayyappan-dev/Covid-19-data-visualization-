@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link  rel="stylesheet" href="https://fontawesome.com/icons/book-open?style=solid" />
+    <link rel="stylesheet" href="./dist/css/main.css" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+
+    <title>Covid-Data Analysis</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="covidHeader">
+        <a href="https://en.wikipedia.org/wiki/Coronavirus"
+          ><img src="./images/virus-solid.svg" alt=""
+        /></a>
+        <h1 class="covidHeader_header">
+          COVID-19 dashboard for TamilNadu state government
+        </h1>
+      </header>
+      <main id="main-content">
+        <aside id="left-bar">
+          <div id="left-bar_sidebar1" class="left-bar_sidebar">
+            <p id="left-bar_sidebar1_lead1">state Active cases</p>
+            <p id="left-bar_sidebar1_lead2"></p>
+            <div id="left-bar_sidebar1_lead3"></div>
+          </div>
+          <div id="left-bar_sidebar2">
+            <p id="left-bar_sidebar2_lead1">Discharged cases</p>
+            <p id="left-bar_sidebar2_lead2"></p>
+            <div id="left-bar_sidebar2_lead3"></div>
+          </div>
+        </aside>
+        <style>
+          .mapboxgl-popup {
+          max-width: 400px;
+          font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+          }
+          </style>       
+        <section id="map-section">
+          <div id="map"></div>
+
+          <div id="menu">
+            <input id="satellite-v9" type="radio" name="rtoggle" value="satellite" checked="checked">
+            <!-- See a list of Mapbox-hosted public styles at -->
+            <!-- https://docs.mapbox.com/api/maps/styles/#mapbox-styles -->
+            <label for="satellite-v9">satellite</label>
+            <input id="light-v10" type="radio" name="rtoggle" value="light">
+            <label for="light-v10">light</label>
+            <input id="dark-v10" type="radio" name="rtoggle" value="dark">
+            <label for="dark-v10">dark</label>
+            <input id="streets-v11" type="radio" name="rtoggle" value="streets">
+            <label for="streets-v11">streets</label>
+            <input id="outdoors-v11" type="radio" name="rtoggle" value="outdoors">
+            <label for="outdoors-v11">outdoors</label>
+            </div>
+        </section>
+        <aside id="right-bar">
+          <div id="caseDetailsRight">
+            <div id="right-bar_sidebar1">
+              <p id="right-bar_sidebar1_lead1">state death cases</p>
+              <p id="right-bar_sidebar1_lead2"></p>
+              <div id="right-bar_sidebar1_lead3"></div>
+            </div>
+            <div id="right-bar_sidebar2">
+              <p id="right-bar_sidebar2_lead1">recently Added cases</p>
+              <p id="right-bar_sidebar2_lead2"></p>
+              <div id="right-bar_sidebar2_lead3"></div>
+            </div>
+          </div>
+          <div style="width:440px; height: 350px;">
+            <canvas id="myLine" height="350" width="440"></canvas>
+          </div>
+          <!-- <ul style="color: white; display: flex; margin-top: 15px;"><li style="color: red; margin-left: 28px;">Cases</li><li style="color: orange; margin-left: 53px;">Discharged</li><li style="color: blue; margin-left: 33px;">Death</li><li style="color: green; margin-left: 53px;">New Cases</li></ul> -->
+        </aside>
+      </main>
+      <footer id="main-footer">
+        <p>Privacy Statement</p>
+        <p>
+          AU.edu Copyright &copy 2021 by Vigneshkumar. All rights
+          reserved.
+        </p>
+      </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
