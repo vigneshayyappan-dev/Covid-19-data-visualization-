@@ -25,7 +25,7 @@
       <main id="main-content">
         <aside id="left-bar">
           <div id="left-bar_sidebar1" class="left-bar_sidebar">
-            <p id="left-bar_sidebar1_lead1">state Active cases</p>
+            <p id="left-bar_sidebar1_lead1">State active cases</p>
             <p id="left-bar_sidebar1_lead2"></p>
             <div id="left-bar_sidebar1_lead3"></div>
           </div>
@@ -39,6 +39,14 @@
           .mapboxgl-popup {
           max-width: 400px;
           font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+          }
+          .mapboxgl-popup-content{
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-weight: bolder; 
+            margin-left: 15px;
+            color:whitesmoke;
+            background-color:grey;
+            padding-left: 20px;
           }
           </style>       
         <section id="map-section">
@@ -62,12 +70,12 @@
         <aside id="right-bar">
           <div id="caseDetailsRight">
             <div id="right-bar_sidebar1">
-              <p id="right-bar_sidebar1_lead1">state death cases</p>
+              <p id="right-bar_sidebar1_lead1">Current cases</p>
               <p id="right-bar_sidebar1_lead2"></p>
               <div id="right-bar_sidebar1_lead3"></div>
             </div>
             <div id="right-bar_sidebar2">
-              <p id="right-bar_sidebar2_lead1">recently Added cases</p>
+              <p id="right-bar_sidebar2_lead1">State Total cases</p>
               <p id="right-bar_sidebar2_lead2"></p>
               <div id="right-bar_sidebar2_lead3"></div>
             </div>

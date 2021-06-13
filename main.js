@@ -16,24 +16,26 @@ let totalDischargedCases =1
 let totalDeathCases = 1
 let totalRecentCases = 1
 
-const callback1 = function (datas) {
-  for (i = 0; i < 37; i++) {
-    const btn = document.createElement("button");  
-    const dist = datas[i][1];
-    let cases = +datas[i][2];
-    btn.textContent = cases + " " + " " + dist;
-    btn.value = dist;
-    btn.setAttribute("id", `totalCases` + i);
-    databaseTotalCases.appendChild(btn);
-    totalNumberofCases = totalNumberofCases+cases
+
+const callback1 = function (district,caseCategory) {
+
+
+  for (i = 3; i<40; i++) {
+      const btn = document.createElement("button");  
+      const dist = district[i];
+      let cases = caseCategory[i].active;
+      btn.textContent = cases + " " + " " + dist;
+      btn.value = dist;
+        btn.setAttribute("id", `totalCases` + i);
+        databaseTotalCases.appendChild(btn);
+        totalNumberofCases = totalNumberofCases+cases
   }
    totalCases.textContent = totalNumberofCases
 
-
-  for (i = 0; i < 37; i++) {
+  for (i = 3; i < 40; i++) {
     const btn = document.createElement("button");
-    const dist = datas[i][1];
-    const cases = +datas[i][3];
+    const dist = district[i];
+    const cases = +caseCategory[i].recovered;
     btn.textContent = cases + " " + " " + dist;
     btn.value = dist;
     btn.setAttribute("id", "dischargedCases" + i);
@@ -42,11 +44,10 @@ const callback1 = function (datas) {
   }
   totalDischarges.textContent = totalDischargedCases
 
-
-  for (i = 0; i < 37; i++) {
+  for (i = 3; i < 40; i++) {
     const btn = document.createElement("button");
-    const dist = datas[i][1];
-    const cases = +datas[i][5];
+    const dist = district[i];
+    const cases = caseCategory[i].deceased;
     btn.textContent = cases + " " + " " + dist;
     btn.value = dist;
     btn.setAttribute("id", "deathCases" + i);
@@ -56,10 +57,10 @@ const callback1 = function (datas) {
    totalDeaths.textContent = totalDeathCases
 
 
-  for (i = 0; i < 37; i++) {
+  for (i = 3; i < 40; i++) {
     const btn = document.createElement("button");
-    const dist = datas[i][1];
-    const cases = +datas[i][4];
+    const dist = district[i];
+    const cases = +caseCategory[i].confirmed;
     btn.textContent = cases + " " + " " + dist;
     btn.value = dist;
     btn.setAttribute("class", "newCases" + i);
@@ -67,36 +68,36 @@ const callback1 = function (datas) {
     totalRecentCases = totalRecentCases + cases
   }
   totalNewCases.textContent = totalRecentCases
-  
-};
+  mapPopup(totalNumberofCases,totalDischargedCases,totalDeathCases,totalRecentCases,district,caseCategory)
+}
 
 // Adding Chart
-const callback2 = function(datas){
+const callback2 = function(district,caseCategory){
 
   let covidDistrict = []
   let covidTotalCases = []
-  for (i = 0; i < 37; i++) {
-    const dist = datas[i][1];
-    let cases = +datas[i][2];
+  for (i = 3; i < 40; i++) {
+    const dist = district[i];
+    const cases = +caseCategory[i].recovered;
     covidTotalCases.push(cases)
     covidDistrict.push(dist)
   }
 
   let covidDischargedCases = []
-  for (i = 0; i < 37; i++) {
-    let cases = +datas[i][3];
+  for (i = 3; i < 40; i++) {
+    const cases = +caseCategory[i].recovered;
     covidDischargedCases.push(cases)
   }
 
   let covidDeathCases = []
-  for (i = 0; i < 37; i++) {
-    let cases = +datas[i][5];
+  for (i = 3; i < 40; i++) {
+    const cases = +caseCategory[i].recovered; 
     covidDeathCases.push(cases)
   }
 
   let covidAddedCases = []
-  for (i = 0; i < 37; i++) {
-    let cases = +datas[i][4];
+  for (i = 3; i < 40; i++) {
+    const cases = +caseCategory[i].recovered;
     covidAddedCases.push(cases)
   }
   let lineChart = new Chart(ctx,{
@@ -138,28 +139,38 @@ const callback2 = function(datas){
     }
 })
 }
-
-
-
-
-const districtName = async () => {
-  const response = await fetch("covidData.json");
+  
+const data = async () => {
+  const response = await fetch("https://api.covid19india.org/state_district_wise.json");
   return response;
 };
 
-districtName()
+data()
 .then((response) => {
     return response.json();
   })
   .then((datas) => {
-    return datas.data;
+    const arrDataState = Object.values(datas)
+    const arrDataDist =  Object.values(arrDataState[32])
+    const arrDataValues =  Object.values(arrDataState[32])
+    const district = Object.keys(arrDataDist[0])
+    const cases = Object.values(arrDataValues[0])
+    return{
+      district,cases
+    }
   })
   .then((data) => {
-    callback1(data);
-    callback2(data)
+    distName = data.district
+    caseCategory = data.cases
+    callback1(distName,caseCategory);
+    callback2(distName,caseCategory)
   });
 
+
+
 // Adding map
+
+function mapPopup(totalActiveCases,totalDischarges,totalDeseased,totalCases,district,caseCategory){
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoidmlnbmVzaGt1bWFyYXl5YXBwYW4iLCJhIjoiY2tuemh6MjN1MDV4azJubWY4d2dpeXp1ciJ9.CV7R8IAXv5Z67bpOrO8sWQ";
@@ -252,464 +263,466 @@ let Vellore = new mapboxgl.Marker().setLngLat([79.1325, 12.9165]).addTo(map);
 let Villupuram = new mapboxgl.Marker().setLngLat([79.4861, 11.9401]).addTo(map);
 let Virudhunagar = new mapboxgl.Marker().setLngLat([77.9624, 9.568]).addTo(map);
 
-// Adding popup
 
-map.on("load", function () {
-  map.addSource("places", {
-    // This GeoJSON contains features that include an "icon"
-    // property. The value of the "icon" property corresponds
-    // to an image in the Mapbox Streets style's sprite.
-    type: "geojson",
-    data: {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Ariyallur</strong><ol><li>Total Cases:5427</li><li>Death Cases:52</li><li>Recently Added Cases:298 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.0694, 11.1521],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Chengapattu</strong><ol><li>Total Cases:76275</li><li>Death Cases:923</li><li>Recently Added Cases:8608 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.9805, 12.69362],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Chennai</strong><ol><li>Total Cases:318614</li><li>Death Cases:4629</li><li>Recently Added Cases:31136 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [80.270186, 13.083694],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Coimbatore</strong><ol><li>Total Cases:75293</li><li>Death Cases:717</li><li>Recently Added Cases: 6948</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [76.962843, 11.001812],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Cuddalore</strong><ol><li>Total Cases: 29363</li><li>Death Cases: 319</li><li>Recently Added Cases: 1450</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.7629, 11.75664],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Dharmapuri</strong><ol><li>Total Cases:8899</li><li>Death Cases:64</li><li>Recently Added Cases: 1078</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.158986, 12.134799],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Dindigul</strong><ol><li>Total Cases: 15030</li><li>Death Cases:208</li><li>Recently Added Cases:1616 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.969573, 10.365545],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Erode</strong><ol><li>Total Cases: 19811</li><li>Death Cases: 157</li><li>Recently Added Cases: 2656</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.060022, 10.510729],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Kallakurichi</strong><ol><li>Total Cases: 12227</li><li>Death Cases: 109</li><li>Recently Added Cases: 649</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.963882, 11.738187],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Kanchepuram</strong><ol><li>Total Cases: 36790</li><li>Death Cases: 515</li><li>Recently Added Cases: 2810</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.704983, 12.835318],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Kanniyakumari</strong><ol><li>Total Cases: 20995</li><li>Death Cases: 1849</li><li>Recently Added Cases: 20995</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.5385, 8.0883],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Karur</strong><ol><li>Total Cases: 7121</li><li>Death Cases: 55</li><li>Recently Added Cases: 786</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.0766, 10.9601],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Krishnagiri</strong><ol><li>Total Cases:13174</li><li>Death Cases: 126</li><li>Recently Added Cases: 2620</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.2126326, 12.5275198],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Madurai</strong><ol><li>Total Cases: 29005</li><li>Death Cases: 502</li><li>Recently Added Cases:4073 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.1198, 9.9252],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Nagapattinam</strong><ol><li>Total Cases: 12705</li><li>Death Cases: 167</li><li>Recently Added Cases: 1395</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.8449, 10.7672],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Namakkal</strong><ol><li>Total Cases: 15095</li><li>Death Cases: 114</li><li>Recently Added Cases: 1730</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.1674, 11.2189],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Nilgiris</strong><ol><li>Total Cases: 9704</li><li>Death Cases: 51</li><li>Recently Added Cases: 459</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [76.7337, 11.4916],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Perambalur</strong><ol><li>Total Cases: 2540</li><li>Death Cases: 24</li><li>Recently Added Cases: 124</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.8807, 11.2342],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Pudukottai</strong><ol><li>Total Cases: 13363</li><li>Death Cases: 160</li><li>Recently Added Cases:742 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.8001, 10.3833],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Ramanathapuram</strong><ol><li>Total Cases: 7815</li><li>Death Cases: 142</li><li>Recently Added Cases: 707</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.8395, 9.3639],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Ranipet</strong><ol><li>Total Cases: 19684</li><li>Death Cases: 196</li><li>Recently Added Cases: 1715</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.319, 12.9487],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Salem</strong><ol><li>Total Cases: 39873</li><li>Death Cases: 500</li><li>Recently Added Cases: 3536</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.146, 11.6643],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Sivaganga</strong><ol><li>Total Cases: 8264</li><li>Death Cases: 130</li><li>Recently Added Cases: 565</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.4809, 9.8433],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tenkasi</strong><ol><li>Total Cases: 11281</li><li>Death Cases: 174</li><li>Recently Added Cases: 1469</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.3161, 8.9594],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Thanjavur</strong><ol><li>Total Cases: 24578</li><li>Death Cases: 298</li><li>Recently Added Cases: 2063</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates:[79.1378, 10.787],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Theni</strong><ol><li>Total Cases: 19371</li><li>Death Cases: 212</li><li>Recently Added Cases: 1321</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.4768, 10.0104],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Thoothukudi</strong><ol><li>Total Cases: 21629</li><li>Death Cases: 151</li><li>Recently Added Cases: 2790</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.1348, 8.7642],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Thiruchirappalli</strong><ol><li>Total Cases: 22038</li><li>Death Cases: 210</li><li>Recently Added Cases:2860 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.7047, 10.7905],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tirunelveli</strong><ol><li>Total Cases: 22428</li><li>Death Cases: 232</li><li>Recently Added Cases: 3836</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.7567, 8.7139],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tirupathur</strong><ol><li>Total Cases: 9559</li><li>Death Cases: 138</li><li>Recently Added Cases: 974</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [78.5678, 12.495],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tiruppur</strong><ol><li>Total Cases: 25111</li><li>Death Cases: 235</li><li>Recently Added Cases:2595 </li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.3411, 11.1085],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tiruvallur</strong><ol><li>Total Cases: 57189</li><li>Death Cases: 771</li><li>Recently Added Cases: 5407</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.912, 13.1231],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tiruvannamalai</strong><ol><li>Total Cases: 23163</li><li>Death Cases: 299</li><li>Recently Added Cases: 1988</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.0747, 12.2253],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Tiruvarur</strong><ol><li>Total Cases: 14666</li><li>Death Cases: 120</li><li>Recently Added Cases: 963</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.6344, 10.7661],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Vellore</strong><ol><li>Total Cases: 25807</li><li>Death Cases: 373</li><li>Recently Added Cases: 2403</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.1325, 12.9165],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Villupuram</strong><ol><li>Total Cases: 17887</li><li>Death Cases: 120</li><li>Recently Added Cases: 1293</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [79.4861, 11.9401],
-          },
-        },
-        {
-          type: "Feature",
-          properties: {
-            description:
-              '<strong>Virudhunagar</strong><ol><li>Total Cases: 19239</li><li>Death Cases: 239</li><li>Recently Added Cases: 1338</li></ol>',
-            icon: "theatre-15",
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [77.9624, 9.568],
-          },
-        },
-      ],
-    },
-  });
+// Adding popup
+  map.on("load", function () {
+ 
+    map.addSource("places", {
+      // This GeoJSON contains features that include an "icon"
+      // property. The value of the "icon" property corresponds
+      // to an image in the Mapbox Streets style's sprite.
+      type: "geojson",
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            properties: {
+              description:
+                `<strong>${district[3]}</strong><ol><li>Total Cases:${caseCategory[3].confirmed}</li><li> Current Cases:${caseCategory[3].deceased}</li><li>Recently Added Cases:${caseCategory[3].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.0694, 11.1521],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[4]}</strong><ol><li>Total Cases:${caseCategory[4].confirmed}</li><li>Current Cases:${caseCategory[4].deceased}</li><li>Recently Added Cases:${caseCategory[4].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.9805, 12.69362],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[5]}</strong><ol><li>Total Cases:${caseCategory[5].confirmed}</li><li>Current Cases:${caseCategory[5].deceased}</li><li>Recently Added Cases:${caseCategory[5].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [80.270186, 13.083694],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[6]}</strong><ol><li>Total Cases:${caseCategory[6].confirmed}</li><li>Current Cases:${caseCategory[6].deceased}</li><li>Recently Added Cases:${caseCategory[6].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [76.962843, 11.001812],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[7]}</strong><ol><li>Total Cases:${caseCategory[7].confirmed}</li><li>Current Cases:${caseCategory[7].deceased}</li><li>Recently Added Cases:${caseCategory[7].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.7629, 11.75664],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[8]}</strong><ol><li>Total Cases:${caseCategory[8].confirmed}</li><li>Current Cases:${caseCategory[8].deceased}</li><li>Recently Added Cases:${caseCategory[8].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.158986, 12.134799],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[9]}</strong><ol><li>Total Cases:${caseCategory[9].confirmed}</li><li>Current Cases:${caseCategory[9].deceased}</li><li>Recently Added Cases:${caseCategory[9].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.969573, 10.365545],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[10]}</strong><ol><li>Total Cases:${caseCategory[10].confirmed}</li><li>Current Cases:${caseCategory[10].deceased}</li><li>Recently Added Cases:${caseCategory[10].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.060022, 10.510729],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[11]}</strong><ol><li>Total Cases:${caseCategory[11].confirmed}</li><li>Current Cases:${caseCategory[11].deceased}</li><li>Recently Added Cases:${caseCategory[11].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.963882, 11.738187],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[12]}</strong><ol><li>Total Cases:${caseCategory[12].confirmed}</li><li>Current Cases:${caseCategory[12].deceased}</li><li>Recently Added Cases:${caseCategory[12].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.704983, 12.835318],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[13]}</strong><ol><li>Total Cases:${caseCategory[13].confirmed}</li><li>Current Cases:${caseCategory[13].deceased}</li><li>Recently Added Cases:${caseCategory[13].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.5385, 8.0883],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[14]}</strong><ol><li>Total Cases:${caseCategory[14].confirmed}</li><li>Current Cases:${caseCategory[14].deceased}</li><li>Recently Added Cases:${caseCategory[14].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.0766, 10.9601],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[15]}</strong><ol><li>Total Cases:${caseCategory[15].confirmed}</li><li>Current Cases:${caseCategory[15].deceased}</li><li>Recently Added Cases:${caseCategory[15].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.2126326, 12.5275198],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[16]}</strong><ol><li>Total Cases:${caseCategory[16].confirmed}</li><li>Current Cases:${caseCategory[16].deceased}</li><li>Recently Added Cases:${caseCategory[16].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.1198, 9.9252],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[17]}</strong><ol><li>Total Cases:${caseCategory[17].confirmed}</li><li>Current Cases:${caseCategory[17].deceased}</li><li>Recently Added Cases:${caseCategory[17].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.8449, 10.7672],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[18]}</strong><ol><li>Total Cases:${caseCategory[18].confirmed}</li><li>Current Cases:${caseCategory[18].deceased}</li><li>Recently Added Cases:${caseCategory[18].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.1674, 11.2189],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[19]}</strong><ol><li>Total Cases:${caseCategory[19].confirmed}</li><li>Current Cases:${caseCategory[19].deceased}</li><li>Recently Added Cases:${caseCategory[19].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [76.7337, 11.4916],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[20]}</strong><ol><li>Total Cases:${caseCategory[20].confirmed}</li><li>Current Cases:${caseCategory[20].deceased}</li><li>Recently Added Cases:${caseCategory[20].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.8807, 11.2342],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[21]}</strong><ol><li>Total Cases:${caseCategory[21].confirmed}</li><li>Current Cases:${caseCategory[21].deceased}</li><li>Recently Added Cases:${caseCategory[21].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.8001, 10.3833],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[22]}</strong><ol><li>Total Cases:${caseCategory[22].confirmed}</li><li>Current Cases:${caseCategory[22].deceased}</li><li>Recently Added Cases:${caseCategory[22].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.8395, 9.3639],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[23]}</strong><ol><li>Total Cases:${caseCategory[23].confirmed}</li><li>Current Cases:${caseCategory[23].deceased}</li><li>Recently Added Cases:${caseCategory[23].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.319, 12.9487],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[24]}</strong><ol><li>Total Cases:${caseCategory[24].confirmed}</li><li>Current Cases:${caseCategory[24].deceased}</li><li>Recently Added Cases:${caseCategory[24].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.146, 11.6643],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[25]}</strong><ol><li>Total Cases:${caseCategory[25].confirmed}</li><li>Current Cases:${caseCategory[25].deceased}</li><li>Recently Added Cases:${caseCategory[25].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.4809, 9.8433],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[26]}</strong><ol><li>Total Cases:${caseCategory[26].confirmed}</li><li>Current Cases:${caseCategory[26].deceased}</li><li>Recently Added Cases:${caseCategory[26].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.3161, 8.9594],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[27]}</strong><ol><li>Total Cases:${caseCategory[27].confirmed}</li><li>Current Cases:${caseCategory[27].deceased}</li><li>Recently Added Cases:${caseCategory[27].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates:[79.1378, 10.787],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[28]}</strong><ol><li>Total Cases:${caseCategory[28].confirmed}</li><li>Current Cases:${caseCategory[28].deceased}</li><li>Recently Added Cases:${caseCategory[28].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.4768, 10.0104],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[29]}</strong><ol><li>Total Cases:${caseCategory[29].confirmed}</li><li>Current Cases:${caseCategory[29].deceased}</li><li>Recently Added Cases:${caseCategory[29].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.1348, 8.7642],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[30]}</strong><ol><li>Total Cases:${caseCategory[30].confirmed}</li><li>Current Cases:${caseCategory[30].deceased}</li><li>Recently Added Cases:${caseCategory[30].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.7047, 10.7905],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[31]}</strong><ol><li>Total Cases:${caseCategory[31].confirmed}</li><li>Current Cases:${caseCategory[31].deceased}</li><li>Recently Added Cases:${caseCategory[31].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.7567, 8.7139],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[32]}</strong><ol><li>Total Cases:${caseCategory[32].confirmed}</li><li>Current Cases:${caseCategory[32].deceased}</li><li>Recently Added Cases:${caseCategory[32].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [78.5678, 12.495],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[33]}</strong><ol><li>Total Cases:${caseCategory[33].confirmed}</li><li>Current Cases:${caseCategory[33].deceased}</li><li>Recently Added Cases:${caseCategory[33].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.3411, 11.1085],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[34]}</strong><ol><li>Total Cases:${caseCategory[34].confirmed}</li><li>Current Cases:${caseCategory[34].deceased}</li><li>Recently Added Cases:${caseCategory[34].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.912, 13.1231],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[35]}</strong><ol><li>Total Cases:${caseCategory[35].confirmed}</li><li>Current Cases:${caseCategory[35].deceased}</li><li>Recently Added Cases:${caseCategory[35].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.0747, 12.2253],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[36]}</strong><ol><li>Total Cases:${caseCategory[36].confirmed}</li><li>Current Cases:${caseCategory[36].deceased}</li><li>Recently Added Cases:${caseCategory[36].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.6344, 10.7661],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[37]}</strong><ol><li>Total Cases:${caseCategory[37].confirmed}</li><li>Current Cases:${caseCategory[37].deceased}</li><li>Recently Added Cases:${caseCategory[37].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.1325, 12.9165],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[38]}</strong><ol><li>Total Cases:${caseCategory[38].confirmed}</li><li>Current Cases:${caseCategory[38].deceased}</li><li>Recently Added Cases:${caseCategory[38].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [79.4861, 11.9401],
+            },
+          },
+          {
+            type: "Feature",
+            properties: {
+              description:
+              `<strong>${district[39]}</strong><ol><li>Total Cases:${caseCategory[39].confirmed}</li><li>Current Cases:${caseCategory[39].deceased}</li><li>Recently Added Cases:${caseCategory[39].active}</li></ol>`,
+              icon: "theatre-15",
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [77.9624, 9.568],
+            },
+          },
+        ],
+      },
+  });  
+
   // Add a layer showing the places.
   map.addLayer({
     id: "places",
@@ -747,11 +760,91 @@ map.on("load", function () {
     map.getCanvas().style.cursor = "";
   });
 });
-
-// Add zoom and rotation controls to the map
 map.addControl(new mapboxgl.NavigationControl());
-
+}
+// Add zoom and rotation controls to the map
 // adding event handler
 window.addEventListener("click", (e) => {
   console.log(e.target.value);
 });
+
+
+
+// const data = async () => {
+//   const response = await fetch("https://api.covid19india.org/state_district_wise.json");
+//   return response;
+// };
+
+// data()
+// .then((response) => {
+//     return response.json();
+//   })
+//   .then((datas) => {
+//     const arrDataState = Object.values(datas)
+//      arrDataDist =  Object.values(arrDataState[32])
+//      console.log(arrDataDist[0])
+//      console.log(Object.values(arrDataDist[0]))
+//   })
+//   .then((data) => {
+//     callback1(data);
+//     callback2(data)
+//   });
+
+
+
+
+
+// const data = async () => {
+//   const response = await fetch("https://api.covid19india.org/state_district_wise.json");
+//   return response;
+// };
+
+// data()
+// .then((response) => {
+//     return response.json();
+//   })
+//   .then((datas) => {
+//     const arrDataState = Object.values(datas)
+//     const arrDataDist =  Object.values(arrDataState[32])
+//     const arrDataValues =  Object.values(arrDataState[32])
+//     const district = Object.keys(arrDataDist[0])
+//     const cases = Object.values(arrDataValues[0])
+//     return{
+//       district,cases
+//     }
+//   })
+//   .then((data) => {
+//     // callback1(data);
+//     // callback2(data)
+//     console.log(data.district)
+//     console.log(data.cases)
+//   });
+
+
+
+
+
+
+// const districtName = async () => {
+//   const response = await fetch("covidData.json");
+//   return response;
+// };
+
+// districtName()
+// .then((response) => {
+//     return response.json();
+//   })
+//   .then((datas) => {
+//     return datas.data;
+//     // console.log(datas)
+//   })
+//   .then((data) => {
+//     callback1(data);
+//     callback2(data)
+//   });
+
+
+
+// callback1(district,caseCategory){
+
+// }
