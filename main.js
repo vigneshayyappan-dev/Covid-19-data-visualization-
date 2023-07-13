@@ -1,170 +1,701 @@
 const ctx = document.getElementById("myLine")
 
+var staticData = {
+  "districtData": {
+      "Railway Quarantine": {
+          "notes": "",
+          "active": 0,
+          "confirmed": 428,
+          "migratedother": 0,
+          "deceased": 0,
+          "recovered": 428,
+          "delta": {
+              "confirmed": 0,
+              "deceased": 0,
+              "recovered": 0
+          }
+      },
+      "Airport Quarantine": {
+          "notes": "",
+          "active": 8,
+          "confirmed": 2098,
+          "migratedother": 0,
+          "deceased": 2,
+          "recovered": 2088,
+          "delta": {
+              "confirmed": 0,
+              "deceased": 0,
+              "recovered": 2
+          }
+      },
+      "Other State": {
+          "notes": "",
+          "active": 0,
+          "confirmed": 0,
+          "migratedother": 0,
+          "deceased": 0,
+          "recovered": 0,
+          "delta": {
+              "confirmed": 0,
+              "deceased": 0,
+              "recovered": 0
+          }
+      },
+      "Ariyalur": {
+          "notes": "",
+          "active": 237,
+          "confirmed": 16037,
+          "migratedother": 0,
+          "deceased": 240,
+          "recovered": 15560,
+          "delta": {
+              "confirmed": 21,
+              "deceased": 1,
+              "recovered": 26
+          }
+      },
+      "Chengalpattu": {
+          "notes": "",
+          "active": 1152,
+          "confirmed": 163274,
+          "migratedother": 0,
+          "deceased": 2413,
+          "recovered": 159709,
+          "delta": {
+              "confirmed": 139,
+              "deceased": 0,
+              "recovered": 117
+          }
+      },
+      "Chennai": {
+          "notes": "[July 22]: 444 backdated deceased entries added to Chennai in TN bulletin.",
+          "active": 2048,
+          "confirmed": 540300,
+          "migratedother": 0,
+          "deceased": 8345,
+          "recovered": 529907,
+          "delta": {
+              "confirmed": 237,
+              "deceased": 3,
+              "recovered": 191
+          }
+      },
+      "Coimbatore": {
+          "notes": "",
+          "active": 2259,
+          "confirmed": 231863,
+          "migratedother": 0,
+          "deceased": 2201,
+          "recovered": 227403,
+          "delta": {
+              "confirmed": 230,
+              "deceased": 2,
+              "recovered": 203
+          }
+      },
+      "Cuddalore": {
+          "notes": "",
+          "active": 777,
+          "confirmed": 61220,
+          "migratedother": 0,
+          "deceased": 821,
+          "recovered": 59622,
+          "delta": {
+              "confirmed": 76,
+              "deceased": 0,
+              "recovered": 47
+          }
+      },
+      "Dharmapuri": {
+          "notes": "",
+          "active": 316,
+          "confirmed": 26415,
+          "migratedother": 0,
+          "deceased": 237,
+          "recovered": 25862,
+          "delta": {
+              "confirmed": 25,
+              "deceased": 0,
+              "recovered": 34
+          }
+      },
+      "Dindigul": {
+          "notes": "",
+          "active": 157,
+          "confirmed": 32322,
+          "migratedother": 0,
+          "deceased": 627,
+          "recovered": 31538,
+          "delta": {
+              "confirmed": 13,
+              "deceased": 1,
+              "recovered": 15
+          }
+      },
+      "Erode": {
+          "notes": "",
+          "active": 1710,
+          "confirmed": 95559,
+          "migratedother": 0,
+          "deceased": 641,
+          "recovered": 93208,
+          "delta": {
+              "confirmed": 160,
+              "deceased": 1,
+              "recovered": 174
+          }
+      },
+      "Kallakurichi": {
+          "notes": "",
+          "active": 468,
+          "confirmed": 29521,
+          "migratedother": 0,
+          "deceased": 199,
+          "recovered": 28854,
+          "delta": {
+              "confirmed": 31,
+              "deceased": 0,
+              "recovered": 42
+          }
+      },
+      "Kancheepuram": {
+          "notes": "",
+          "active": 448,
+          "confirmed": 72144,
+          "migratedother": 0,
+          "deceased": 1213,
+          "recovered": 70483,
+          "delta": {
+              "confirmed": 42,
+              "deceased": 1,
+              "recovered": 36
+          }
+      },
+      "Kanyakumari": {
+          "notes": "",
+          "active": 339,
+          "confirmed": 60451,
+          "migratedother": 0,
+          "deceased": 1022,
+          "recovered": 59090,
+          "delta": {
+              "confirmed": 30,
+              "deceased": 0,
+              "recovered": 28
+          }
+      },
+      "Karur": {
+          "notes": "",
+          "active": 188,
+          "confirmed": 22836,
+          "migratedother": 0,
+          "deceased": 351,
+          "recovered": 22297,
+          "delta": {
+              "confirmed": 23,
+              "deceased": 0,
+              "recovered": 12
+          }
+      },
+      "Krishnagiri": {
+          "notes": "",
+          "active": 309,
+          "confirmed": 41638,
+          "migratedother": 0,
+          "deceased": 325,
+          "recovered": 41004,
+          "delta": {
+              "confirmed": 26,
+              "deceased": 1,
+              "recovered": 37
+          }
+      },
+      "Madurai": {
+          "notes": "",
+          "active": 228,
+          "confirmed": 73729,
+          "migratedother": 0,
+          "deceased": 1147,
+          "recovered": 72354,
+          "delta": {
+              "confirmed": 15,
+              "deceased": 0,
+              "recovered": 18
+          }
+      },
+      "Nagapattinam": {
+          "notes": "",
+          "active": 427,
+          "confirmed": 19075,
+          "migratedother": 0,
+          "deceased": 295,
+          "recovered": 18353,
+          "delta": {
+              "confirmed": 36,
+              "deceased": 3,
+              "recovered": 43
+          }
+      },
+      "Namakkal": {
+          "notes": "",
+          "active": 574,
+          "confirmed": 47771,
+          "migratedother": 0,
+          "deceased": 458,
+          "recovered": 46739,
+          "delta": {
+              "confirmed": 37,
+              "deceased": 0,
+              "recovered": 57
+          }
+      },
+      "Nilgiris": {
+          "notes": "",
+          "active": 493,
+          "confirmed": 31048,
+          "migratedother": 0,
+          "deceased": 186,
+          "recovered": 30369,
+          "delta": {
+              "confirmed": 43,
+              "deceased": 0,
+              "recovered": 51
+          }
+      },
+      "Perambalur": {
+          "notes": "",
+          "active": 109,
+          "confirmed": 11579,
+          "migratedother": 0,
+          "deceased": 225,
+          "recovered": 11245,
+          "delta": {
+              "confirmed": 10,
+              "deceased": 0,
+              "recovered": 10
+          }
+      },
+      "Pudukkottai": {
+          "notes": "",
+          "active": 356,
+          "confirmed": 28533,
+          "migratedother": 0,
+          "deceased": 372,
+          "recovered": 27805,
+          "delta": {
+              "confirmed": 39,
+              "deceased": 0,
+              "recovered": 23
+          }
+      },
+      "Ramanathapuram": {
+          "notes": "",
+          "active": 94,
+          "confirmed": 20110,
+          "migratedother": 0,
+          "deceased": 351,
+          "recovered": 19665,
+          "delta": {
+              "confirmed": 6,
+              "deceased": 0,
+              "recovered": 13
+          }
+      },
+      "Ranipet": {
+          "notes": "",
+          "active": 216,
+          "confirmed": 42169,
+          "migratedother": 0,
+          "deceased": 745,
+          "recovered": 41208,
+          "delta": {
+              "confirmed": 22,
+              "deceased": 0,
+              "recovered": 22
+          }
+      },
+      "Salem": {
+          "notes": "",
+          "active": 843,
+          "confirmed": 94328,
+          "migratedother": 0,
+          "deceased": 1597,
+          "recovered": 91888,
+          "delta": {
+              "confirmed": 86,
+              "deceased": 3,
+              "recovered": 87
+          }
+      },
+      "Sivaganga": {
+          "notes": "",
+          "active": 229,
+          "confirmed": 19022,
+          "migratedother": 0,
+          "deceased": 199,
+          "recovered": 18594,
+          "delta": {
+              "confirmed": 21,
+              "deceased": 0,
+              "recovered": 24
+          }
+      },
+      "Tenkasi": {
+          "notes": "",
+          "active": 112,
+          "confirmed": 26928,
+          "migratedother": 0,
+          "deceased": 484,
+          "recovered": 26332,
+          "delta": {
+              "confirmed": 9,
+              "deceased": 0,
+              "recovered": 11
+          }
+      },
+      "Thanjavur": {
+          "notes": "",
+          "active": 995,
+          "confirmed": 68972,
+          "migratedother": 0,
+          "deceased": 864,
+          "recovered": 67113,
+          "delta": {
+              "confirmed": 77,
+              "deceased": 2,
+              "recovered": 82
+          }
+      },
+      "Theni": {
+          "notes": "",
+          "active": 120,
+          "confirmed": 43038,
+          "migratedother": 0,
+          "deceased": 514,
+          "recovered": 42404,
+          "delta": {
+              "confirmed": 13,
+              "deceased": 0,
+              "recovered": 14
+          }
+      },
+      "Thiruvallur": {
+          "notes": "",
+          "active": 941,
+          "confirmed": 114461,
+          "migratedother": 0,
+          "deceased": 1766,
+          "recovered": 111754,
+          "delta": {
+              "confirmed": 100,
+              "deceased": 1,
+              "recovered": 83
+          }
+      },
+      "Thiruvarur": {
+          "notes": "",
+          "active": 432,
+          "confirmed": 38327,
+          "migratedother": 0,
+          "deceased": 376,
+          "recovered": 37519,
+          "delta": {
+              "confirmed": 40,
+              "deceased": 1,
+              "recovered": 38
+          }
+      },
+      "Thoothukkudi": {
+          "notes": "",
+          "active": 196,
+          "confirmed": 55274,
+          "migratedother": 0,
+          "deceased": 398,
+          "recovered": 54680,
+          "delta": {
+              "confirmed": 18,
+              "deceased": 0,
+              "recovered": 21
+          }
+      },
+      "Tiruchirappalli": {
+          "notes": "",
+          "active": 749,
+          "confirmed": 73209,
+          "migratedother": 0,
+          "deceased": 979,
+          "recovered": 71481,
+          "delta": {
+              "confirmed": 74,
+              "deceased": 3,
+              "recovered": 74
+          }
+      },
+      "Tirunelveli": {
+          "notes": "",
+          "active": 252,
+          "confirmed": 48151,
+          "migratedother": 0,
+          "deceased": 430,
+          "recovered": 47469,
+          "delta": {
+              "confirmed": 14,
+              "deceased": 0,
+              "recovered": 26
+          }
+      },
+      "Tirupathur": {
+          "notes": "",
+          "active": 178,
+          "confirmed": 28410,
+          "migratedother": 0,
+          "deceased": 604,
+          "recovered": 27628,
+          "delta": {
+              "confirmed": 10,
+              "deceased": 0,
+              "recovered": 19
+          }
+      },
+      "Tiruppur": {
+          "notes": "",
+          "active": 857,
+          "confirmed": 88754,
+          "migratedother": 0,
+          "deceased": 876,
+          "recovered": 87021,
+          "delta": {
+              "confirmed": 78,
+              "deceased": 2,
+              "recovered": 67
+          }
+      },
+      "Tiruvannamalai": {
+          "notes": "",
+          "active": 503,
+          "confirmed": 52586,
+          "migratedother": 0,
+          "deceased": 641,
+          "recovered": 51442,
+          "delta": {
+              "confirmed": 52,
+              "deceased": 1,
+              "recovered": 66
+          }
+      },
+      "Vellore": {
+          "notes": "",
+          "active": 308,
+          "confirmed": 48356,
+          "migratedother": 0,
+          "deceased": 1097,
+          "recovered": 46951,
+          "delta": {
+              "confirmed": 39,
+              "deceased": 1,
+              "recovered": 27
+          }
+      },
+      "Viluppuram": {
+          "notes": "",
+          "active": 358,
+          "confirmed": 44205,
+          "migratedother": 0,
+          "deceased": 341,
+          "recovered": 43506,
+          "delta": {
+              "confirmed": 37,
+              "deceased": 0,
+              "recovered": 33
+          }
+      },
+      "Virudhunagar": {
+          "notes": "",
+          "active": 137,
+          "confirmed": 45628,
+          "migratedother": 0,
+          "deceased": 542,
+          "recovered": 44949,
+          "delta": {
+              "confirmed": 10,
+              "deceased": 1,
+              "recovered": 20
+          }
+      },
+      "Mayiladuthurai": {
+          "notes": "",
+          "active": 259,
+          "confirmed": 21325,
+          "migratedother": 0,
+          "deceased": 271,
+          "recovered": 20795,
+          "delta": {
+              "confirmed": 25,
+              "deceased": 0,
+              "recovered": 24
+          }
+      }
+  },
+  "statecode": "TN"
+}
 
-databaseTotalCases = document.getElementById("left-bar_sidebar1_lead3");
-databaseDischargedCases = document.getElementById("left-bar_sidebar2_lead3")
-databaseDeathCases = document.getElementById("right-bar_sidebar1_lead3");
-databaseNewCases = document.getElementById("right-bar_sidebar2_lead3");
+var databaseTotalCases = document.getElementById("left-bar_sidebar1_lead3");
+var databaseDischargedCases = document.getElementById("left-bar_sidebar2_lead3")
+var databaseDeathCases = document.getElementById("right-bar_sidebar1_lead3");
+var databaseNewCases = document.getElementById("right-bar_sidebar2_lead3");
 
-totalCases = document.getElementById("left-bar_sidebar1_lead2")
-totalDischarges = document.getElementById("left-bar_sidebar2_lead2")
-totalDeaths = document.getElementById("right-bar_sidebar1_lead2")
-totalNewCases = document.getElementById("right-bar_sidebar2_lead2")
+var totalCases = document.getElementById("left-bar_sidebar1_lead2")
+var totalDischarges = document.getElementById("left-bar_sidebar2_lead2")
+var totalDeaths = document.getElementById("right-bar_sidebar1_lead2")
+var totalNewCases = document.getElementById("right-bar_sidebar2_lead2")
 
-let totalNumberofCases = 1
-let totalDischargedCases =1
-let totalDeathCases = 1
-let totalRecentCases = 1
+let totalNumberofCases = 0;
+let totalDischargedCases = 0;
+let totalDeathCases = 0;
+let totalRecentCases = 0;
 
 
 const callback1 = function (district,caseCategory) {
 
+  district.forEach((location,i) => {
+    if(i > 2){
+      //Total Cases
 
-  for (i = 3; i<40; i++) {
-      const btn = document.createElement("button");  
-      const dist = district[i];
-      let cases = caseCategory[i].active;
-      btn.textContent = cases + " " + " " + dist;
-      btn.value = dist;
-        btn.setAttribute("id", `totalCases` + i);
-        databaseTotalCases.appendChild(btn);
-        totalNumberofCases = totalNumberofCases+cases
-  }
-   totalCases.textContent = totalNumberofCases
+      var btnTotalCases = document.createElement("button");
+      var distTotalCases = location;
+      var casesTotalCases = +caseCategory[i].recovered;
+      btnTotalCases.textContent = casesTotalCases + " " + " " + distTotalCases;
+      btnTotalCases.value = distTotalCases;
+      btnTotalCases.setAttribute("id", "dischargedCases" + i);
+      databaseTotalCases.appendChild(btnTotalCases);
 
-  for (i = 3; i < 40; i++) {
-    const btn = document.createElement("button");
-    const dist = district[i];
-    const cases = +caseCategory[i].recovered;
-    btn.textContent = cases + " " + " " + dist;
-    btn.value = dist;
-    btn.setAttribute("id", "dischargedCases" + i);
-    databaseDischargedCases.appendChild(btn);
-    totalDischargedCases = totalDischargedCases+cases
-  }
-  totalDischarges.textContent = totalDischargedCases
+      totalCases.textContent = totalDischargedCases+=caseCategory[i].active;
 
-  for (i = 3; i < 40; i++) {
-    const btn = document.createElement("button");
-    const dist = district[i];
-    const cases = caseCategory[i].deceased;
-    btn.textContent = cases + " " + " " + dist;
-    btn.value = dist;
-    btn.setAttribute("id", "deathCases" + i);
-    databaseDeathCases.appendChild(btn);
-    totalDeathCases = totalDeathCases +cases
-  }
-   totalDeaths.textContent = totalDeathCases
+      //Discharged Cases
+
+      var btnDischargedCases = document.createElement("button");
+      var distDischargedCases = location;
+      var casesDischargedCases = +caseCategory[i].recovered;
+      btnDischargedCases.textContent = casesDischargedCases + " " + " " + distDischargedCases;
+      btnDischargedCases.value = distDischargedCases;
+      btnDischargedCases.setAttribute("id", "dischargedCases" + i);
+      databaseDischargedCases.appendChild(btnDischargedCases);
+
+      totalDischarges.textContent = totalDischargedCases+=caseCategory[i].recovered;
+
+      //Death Cases
+
+      var btnDeathCases = document.createElement("button");
+      var distDeathCases = district[i];
+      var casesDeathCases = caseCategory[i].deceased;
+      btnDeathCases.textContent = casesDeathCases + " " + " " + distDeathCases;
+      btnDeathCases.value = distDeathCases;
+      btnDeathCases.setAttribute("id", "deathCases" + i);
+      databaseDeathCases.appendChild(btnDeathCases);
+
+      totalDeaths.textContent = totalDeathCases+=caseCategory[i].deceased;
 
 
-  for (i = 3; i < 40; i++) {
-    const btn = document.createElement("button");
-    const dist = district[i];
-    const cases = +caseCategory[i].confirmed;
-    btn.textContent = cases + " " + " " + dist;
-    btn.value = dist;
-    btn.setAttribute("class", "newCases" + i);
-    databaseNewCases.appendChild(btn);
-    totalRecentCases = totalRecentCases + cases
-  }
-  totalNewCases.textContent = totalRecentCases
-  mapPopup(totalNumberofCases,totalDischargedCases,totalDeathCases,totalRecentCases,district,caseCategory)
+      //New Cases
+
+      var btnNewCases = document.createElement("button");
+      var distNewCases = district[i];
+      var casesNewCases = +caseCategory[i].confirmed;
+      btnNewCases.textContent = casesNewCases + " " + " " + distNewCases;
+      btnNewCases.value = distNewCases;
+      btnNewCases.setAttribute("class", "newCases" + i);
+      databaseNewCases.appendChild(btnNewCases);
+
+      totalNewCases.textContent = totalRecentCases+=caseCategory[i].confirmed;
+    }
+  });
+  mapPopup(totalNumberofCases,totalDischargedCases,totalDeathCases,totalRecentCases,district,caseCategory);
 }
 
 // Adding Chart
 const callback2 = function(district,caseCategory){
 
-  let covidDistrict = []
-  let covidTotalCases = []
-  for (i = 3; i < 40; i++) {
-    const dist = district[i];
-    const cases = +caseCategory[i].recovered;
-    covidTotalCases.push(cases)
-    covidDistrict.push(dist)
-  }
+    let covidDistrict = []
+    let covidTotalCases = []
+    for (i = 3; i < 40; i++) {
+      const dist = district[i];
+      const cases = +caseCategory[i].recovered;
+      covidTotalCases.push(cases)
+      covidDistrict.push(dist)
+    }
 
-  let covidDischargedCases = []
-  for (i = 3; i < 40; i++) {
-    const cases = +caseCategory[i].recovered;
-    covidDischargedCases.push(cases)
-  }
+    let covidDischargedCases = []
+    for (i = 3; i < 40; i++) {
+      const cases = +caseCategory[i].recovered;
+      covidDischargedCases.push(cases)
+    }
 
-  let covidDeathCases = []
-  for (i = 3; i < 40; i++) {
-    const cases = +caseCategory[i].recovered; 
-    covidDeathCases.push(cases)
-  }
+    let covidDeathCases = []
+    for (i = 3; i < 40; i++) {
+      const cases = +caseCategory[i].recovered; 
+      covidDeathCases.push(cases)
+    }
 
-  let covidAddedCases = []
-  for (i = 3; i < 40; i++) {
-    const cases = +caseCategory[i].recovered;
-    covidAddedCases.push(cases)
-  }
-  let lineChart = new Chart(ctx,{
-    type:"line",
-    data:{
-        labels:covidDistrict,
-        datasets:[{
-            label:"Cases",
+    let covidAddedCases = []
+    for (i = 3; i < 40; i++) {
+      const cases = +caseCategory[i].recovered;
+      covidAddedCases.push(cases)
+    }
+    let lineChart = new Chart(ctx,{
+      type:"line",
+      data:{
+          labels:covidDistrict,
+          datasets:[{
+              label:"Cases",
+              fill:false,
+              borderJoinStyle:"round",
+              borderColor:"red",
+              lineTension:0,
+              data:covidTotalCases
+              // backgroundColor:"red", // borderCapStyle:"round", // pointBorderColor:"rgba(6,82,221,1.0)",            // pointBackgroundColor:"green",            // pointHoverBorderColor:"yellow",            // pointBackgroundColor:"violet",            // pointHoverBorderWidth:3,// pointRadius:3, 
+            },{  
+              label:"Discharges",
+              fill:false,
+              borderJoinStyle:"round",
+              borderColor:"orange",
+              lineTension:0,
+            data:covidDischargedCases
+          },{
+            label:"Death",
             fill:false,
             borderJoinStyle:"round",
-            borderColor:"red",
+            borderColor:"blue",
             lineTension:0,
-            data:covidTotalCases
-            // backgroundColor:"red", // borderCapStyle:"round", // pointBorderColor:"rgba(6,82,221,1.0)",            // pointBackgroundColor:"green",            // pointHoverBorderColor:"yellow",            // pointBackgroundColor:"violet",            // pointHoverBorderWidth:3,// pointRadius:3, 
-        },{  
-          label:"Discharges",
-          fill:false,
-          borderJoinStyle:"round",
-          borderColor:"orange",
-          lineTension:0,
-        data:covidDischargedCases
-      },{
-        label:"Death",
-        fill:false,
-        borderJoinStyle:"round",
-        borderColor:"blue",
-        lineTension:0,
-        data:covidDeathCases
-      },
-      {
-        label:"Active",
-        fill:false,
-        borderJoinStyle:"round",
-        borderColor:"green",
-        lineTension:0,
-        data:covidAddedCases
+            data:covidDeathCases
+          },
+          {
+            label:"Active",
+            fill:false,
+            borderJoinStyle:"round",
+            borderColor:"green",
+            lineTension:0,
+            data:covidAddedCases
+          }
+        ]
       }
-      ]
-    }
-})
+    })
 }
   
-const data = async () => {
-  const response = await fetch("https://api.covid19india.org/state_district_wise.json");
-  return response;
+var data = async () => {
+  var response = await fetch("https://data.covid19india.org/state_district_wise.json");
+  if(response && response.status && response.data){
+    return response;
+  }else{
+    return response = staticData;;
+  }
 };
 
-data()
-.then((response) => {
-    return response.json();
+data().then((datas) => {
+    const district = Object.keys(datas.districtData);
+    const cases = Object.values(datas.districtData);
+    callback1(district,cases);
+    callback2(district,cases)
   })
-  .then((datas) => {
-    const arrDataState = Object.values(datas)
-    const arrDataDist =  Object.values(arrDataState[32])
-    const arrDataValues =  Object.values(arrDataState[32])
-    const district = Object.keys(arrDataDist[0])
-    const cases = Object.values(arrDataValues[0])
-    return{
-      district,cases
-    }
-  })
-  .then((data) => {
-    distName = data.district
-    caseCategory = data.cases
-    callback1(distName,caseCategory);
-    callback2(distName,caseCategory)
-  });
 
 
 
@@ -176,10 +707,6 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoidmlnbmVzaGt1bWFyYXl5YXBwYW4iLCJhIjoiY2tuemh6MjN1MDV4azJubWY4d2dpeXp1ciJ9.CV7R8IAXv5Z67bpOrO8sWQ";
 var map = new mapboxgl.Map({
   container: "map",
-  // style: "mapbox://styles/vigneshkumarayyappan/cko02e9ka2txe17qx1smlm86b",
-  // mapbox://styles/vigneshkumarayyappan/cko02h75m0jhc17pl31wkzypc
-  // style:"mapbox://styles/vigneshkumarayyappan/cko02h75m0jhc17pl31wkzypc",
-  // style:"mapbox://styles/vigneshkumarayyappan/cko02h75m0jhc17pl31wkzypc",
   style:"mapbox://styles/vigneshkumarayyappan/cko02h75m0jhc17pl31wkzypc",
   zoom: 6,
   center: [ 78.6569, 11.1271],
