@@ -93,7 +93,7 @@ body {
   font-weight: bold;
 }
 #wrapper #left-bar #left-bar_sidebar1 #left-bar_sidebar1_lead3 {
-  height: 28vh;
+  height: 26vh;
   overflow-y: scroll;
   font-size: 20px;
 }
@@ -140,8 +140,7 @@ body {
   font-weight: bold;
 }
 #wrapper #left-bar #left-bar_sidebar2 #left-bar_sidebar2_lead3 {
-  margin-top: 15px;
-  height: 28vh;
+  height: 28.8vh;
   overflow-y: scroll;
   font-size: 20px;
 }
@@ -208,7 +207,7 @@ body {
 }
 #wrapper #right-bar #caseDetailsRight #right-bar_sidebar1 #right-bar_sidebar1_lead3 {
   margin-top: 15px;
-  height: 25.5vh;
+  height: 24vh;
   overflow-y: scroll;
   font-size: 20px;
 }
@@ -255,7 +254,7 @@ body {
 }
 #wrapper #right-bar #caseDetailsRight #right-bar_sidebar2 #right-bar_sidebar2_lead3 {
   margin-top: 15px;
-  height: 25.5vh;
+  height: 24vh;
   overflow-y: scroll;
   font-size: 20px;
 }
